@@ -1,0 +1,40 @@
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: MyDb
+      POSTGRES_USER: django_user
+      POSTGRES_PASSWORD: django_password
+      DJANGO_SECRET_KEY: Technman2024  # Add other needed env variables
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+    ports:
+      - "5432:5432"
+
+  frontend:
+    build:
+      context: D:\ReactTask\Training\employee-management  
+      dockerfile: Dockerfile 
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api 
+    depends_on:
+      - django
+
+volumes:
+  postgres_data:
